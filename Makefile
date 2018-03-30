@@ -1,10 +1,8 @@
 ######################## CONFIGURATION ########################################
 
-# TODO update for this project!
-
 # C++ compiler and compling flags
 CC := g++
-CFLAGS := -Wall -Wextra -g -std=c++11 -fPIC
+CFLAGS := -Wall -Wextra -g -std=c++11
 
 # Directories
 BUILDDIR := build
@@ -22,21 +20,22 @@ INC := -I include
 # linking flags, "-L/path/to/your/libs"
 LDFLAGS :=
 # libraries, either "/path/to/static/libs.a" or just -llibs
-LIBS := -llapacke -lblas
+LIBS := -lCGAL
 
 # dependencies, your headers that are depended by objs
 # note that in general, you need to group objs for different
 # deps
-DEPS := Complex.h
+DEPS :=
 
 # Formatting
+
 # Colors #
-COM_COLOR := \033[0;34m
-OBJ_COLOR := \033[0;36m
-OK_COLOR := \033[0;32m
-ERROR_COLOR := \033[0;31m
-WARN_COLOR := \033[0;33m
-NOCOLOR := \033[m
+COM_C := \033[0;34m
+OBJ_C := \033[0;36m
+OK_C := \033[0;32m
+ERROR_C := \033[0;31m
+WARN_C := \033[0;33m
+NO_C := \033[m
 
 # Formatting #
 BF := \033[1m
@@ -46,13 +45,12 @@ DM := \033[2m
 
 
 # Strings #
-OK_STRING := "[OK]"
-ERROR_STRING := "[ERROR]"
-WARN_STRING := "[WARNING]"
-COM_STRING := "Compiling"
-LNK_STRING := "Linking:"
-CLN_STRING := "Cleaning:"
-
+OK_S := "[OK]"
+ERROR_S := "[ERROR]"
+WARN_S := "[WARNING]"
+COM_S := "Compiling"
+LNK_S := "Linking:"
+CLN_S := "Cleaning:"
 
 
 # suffix rule
@@ -65,7 +63,7 @@ CLN_STRING := "Cleaning:"
 
 # Commands #
 default: $(TARGET) $(OBJECTS)
-	@echo "$(COM_COLOR)$(BF)Running:$(NM)$(NOCOLOR) $(TARGET)"
+	@echo "$(COM_C)$(BF)Running:$(NM)$(NO_C) $(TARGET)"
 	@$(TARGET)
 
 plots: $(DATA)
@@ -73,30 +71,19 @@ plots: $(DATA)
 	$(python3 scripts/plot_results.py)
 
 $(TARGET): $(OBJECTS)
-	@echo
-	"$(COM_COLOR)$(BF)$(LNK_STRING)$(NM)$(NOCOLOR)
-	$(OBJECTS)"
-	@echo "    $(UL)$(CC) $^ $(LIBS) -o
-	$(TARGET) $(NM)"
+	@echo "$(COM_C)$(BF)$(LNK_S)$(NM)$(NO_C) $(OBJECTS)"
+	@echo "    $(UL)$(CC) $^ $(LIBS) -o $(TARGET) $(NM)"
 	@$(CC) $^ $(LIBS) -o $(TARGET) 
 
 $(BUILDDIR)/%.o: $(SRCDIR)/%.$(SRCEXT)
-	@echo
-	"$(COM_COLOR)$(BF)$(COM_STRING)$(NM)$(NOCOLOR)"
+	@echo "$(COM_C)$(BF)$(COM_S)$(NM)$(NO_C)"
 	@mkdir -p $(BUILDDIR)
-	@echo "    $(UL)$(CC) $(CFLAGS)
-	$(INC) -c -o $@ $<$(NM)"
-	@$(CC) $(CFLAGS) $(INC) -c -o $@
-	$<
+	@echo "    $(UL)$(CC) $(CFLAGS) $(INC) -c -o $@ $<$(NM)"
+	@$(CC) $(CFLAGS) $(INC) -c -o $@ $<
 
 clean:
-	@echo
-	"$(COM_COLOR)$(BF)$(CLN_STRING)$(NM)$(NOCOLOR)"
-	@echo "    $(RM) -r
-	$(BUILDDIR) $(TARGET)
-	$(MISC)";
-	@$(RM) -r
-	$(BUILDDIR)/
-	$(TARGET) $(MISC);
+	@echo "$(COM_C)$(BF)$(CLN_S)$(NM)$(NO_C)"
+	@echo "    $(RM) -r $(BUILDDIR) $(TARGET) $(MISC)";
+	@$(RM) -r $(BUILDDIR)/ $(TARGET) $(MISC);
 
 .PHONY: clean plots
