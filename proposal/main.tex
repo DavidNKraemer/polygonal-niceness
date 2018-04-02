@@ -1,5 +1,16 @@
 \documentclass{article}
+
 \usepackage[utf8]{inputenc}
+\usepackage[]{amsmath}
+\usepackage{amsthm}
+\usepackage{amssymb}
+
+\newcommand{\RR}{\mathbb{R}}
+\newcommand{\abs}[1]{\vert#1\vert}
+\DeclareMathOperator*{\argmin}{\textrm{arg\,min}}
+
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}[section]
 
 \title{Fatness of Simple Polygons}
 \author{Sharmila Duppala \and David Kraemer}
@@ -11,23 +22,23 @@
 
 \section{Problem Statement} 
 
+[From Professor Mitchell's description.]
 Computing the Niceness of a Polygonal Shape. There are various notions of
 quantifying how “nice” or how “fat” a simple polygon $P$ is. A “nicest” polygon
-might be a regular n-gon, which most closely approximates a circular disk. This
+might be a regular $n$-gon, which most closely approximates a circular disk. This
 project seeks to implement some precise metrics for niceness, and compare them
 on simple polygons (possibly moused in by a user or read in from a file, etc).
 To make it simple and discrete, I propose that you discretize the boundary of
-$P$
-with discrete points pi (additional vertices), with a prescribed spacing,
-$\delta$. (That is, for edges of $P$ longer than $\delta$, add vertices along the
-edge so that the new sub-segments are of length at most $\delta$, for a
+$P$ with discrete points $p_i$ (additional vertices), with a prescribed spacing,
+$\delta$. (That is, for edges of $P$ longer than $\delta$, add vertices along
+  the edge so that the new sub-segments are of length at most $\delta$, for a
 user-specified parameter $\delta$.)
 
 Then, consider discrete choices of radii $r = \rho, 2\rho, 3\rho, \ldots$ for
 disks, $B(p_i,r)$, centered at the discrete boundary points $p_i$, for each
 radius $r$. The (discrete) fatness of $P$ is given by the smallest value of the
-ratio $area(B(p_i,r)\cap P)/area(B(p_i, r)$, over all choices of $p_i$ and $r =
-  \rho, 2\rho, 3\rho$, . . . such that $P$ is not contained fully
+ratio $\lambda (B(p_i,r)\cap P)/\lambda (B(p_i, r)$, over all choices of $p_i$ and $r =
+  \rho, 2\rho, 3\rho, \ldots$ such that $P$ is not contained fully
   inside$B(p_i,r)$.
 
 Implement and experiment with this fatness measure. It may be possible to use
@@ -41,22 +52,81 @@ such that the disk does not contain all of $P$), without resorting to the simple
 discretization. Or, can we compute a provable approximation to the exact
 fatness?)
 
-\section{Inferences and Questions}
-The decomposition of the polygon results in some fat Polygons as well as some bad Polygons. We see that a fat Polygon is made a bad Polygon by inserting the bad polygon. This makes me wonder about the union of the Simple Polygons NICE+BAD, BAD+BAD, NICE+NICE. 
-\subsubsection{Questions} 
-\begin{enumerate}
-\item Q1: Given a Simple Polygon, does it fatness depend on the fatness of the
-  individual polygons its made of?
-\item Q2: So, for an individual polygon, without loss of generality lets assume that every Simple Polygon is made up of triangles. So, to measure the fatness of a polygon, we  have to measure the fatness of a triangle. So, the next question we ask ourselves is the fatness of any given triangle, the simplest polygon.
-\item
-Q3: Can we get the fatness of the triangle using the $\alpha$-fatness using the formula given above, whereas is it possible to use squares instead of circles as we know our boundary is a Polygon with straight lines but not a curve.
-Q4: About the defnition of the $\alpha-fatness$
-Q5: Why do we have to discretize the 
-Q6: Alternative measures like, possibly bad unions of nice polygons or visibility kernal ratio. 
-Q7: 
-\end{enumerate}
+\section{Definitions}
+
+Our present objective is to develop rigorous measures of the ``niceness'' of
+simple bounded closed planar polygons with the intuitive hierarchy that regular
+$n$-gons are ``nicest'' followed by convex $n$-gons and proceeded by ``fat''
+polygons---i.e., polygons which retain their structure under smoothing filters.
+
+Throughout we assume that $P \subseteq \RR^2$ is a simple bounded closed
+polygon. We shall denote by $\partial P$ the boundary of $P$, with
+$\abs{\partial P}$ denoting the perimeter and $\lambda(P)$ denoting the area.
+For given points $x,y \in \RR$, denote the closed line segment bounded by $x$
+and $y$ by $[x,y]$.  The class of such polygons is denoted by $\mathcal{P}$.
+
+One class of ``fatness'' measures arises through partitioning $P$ into two
+(interior disjoint) polygons $P = P' \cup P''$ via chords.  A chord is a pair
+$x,y \in \partial P$ such that the segment $[x,y]$ is contained by the relative
+interior of $P$ except at the endpoints $x$ and $y$.  Such a chord $[x,y]$
+defines a partition of $P = P' \cup P''$ by orientation, so that $\partial P'$
+is the arc from $x$ to $y$ with $[y,x]$ and that $\partial P''$ is the arc from
+$y$ to $x$ with $[x,y]$. 
+
+\begin{definition}
+  Let $f : \mathcal{P} \to \RR$. For a given $P \in \mathcal{P}$,
+  its \emph{chord-$f$ score} is given by
+  \begin{equation*}
+    s_f(P) = \min_{x,y \in P} \max(f(P'), f(P''))
+  \end{equation*}
+  where the chord $[x,y]$ partitions $P = P' \cup P''$.
+\end{definition}
+
+Intuitively, $f$ represents a polygon's cost with respect to a certain
+measurement.  For example, if $f$ indicates the perimeter of $P$, then $s_f$ is
+associated with a partition of $P$ such that the maximum perimeter of either
+subpolygon is minimized. Indeed, measures such as perimeter or area are the
+typical choices of $f$, but any suitable property of the polygon may be
+employed.
+
+The visibility kernel of $P$, denoted by $\ker P$, is the subset of $P$ which
+``sees'' all of $P$. That is, if $x \in \ker P$ and $y \in P$, then $[x,y]
+\subseteq P$. Another proposed measure of polygonal ``niceness'' utilizes the
+visibility kernel.
+
+\begin{definition}
+  The \emph{visibility kernel score} is given by
+  \begin{equation*}
+    s_{\textrm{vis}}(P) = \frac{\lambda(\ker P)}{\lambda(P)}.
+  \end{equation*}
+\end{definition}
+
+If $P$ is a regular $n$-gon or convex $s_{\textrm{vis}}(P) = 1$, since trivially
+$\ker P = P$. On the other hand, if $P$ is not star shaped, then
+$s_{\textrm{vis}}(P) = 0$.
+
+%\section{Inferences and Questions}
+%The decomposition of the polygon results in some fat Polygons as well as some bad Polygons. We see that a fat Polygon is made a bad Polygon by inserting the bad polygon. This makes me wonder about the union of the Simple Polygons NICE+BAD, BAD+BAD, NICE+NICE. 
+%\subsubsection{Questions} 
+%\begin{enumerate}
+%\item Q1: Given a Simple Polygon, does it fatness depend on the fatness of the
+%  individual polygons its made of?
+%\item Q2: So, for an individual polygon, without loss of generality lets assume that every Simple Polygon is made up of triangles. So, to measure the fatness of a polygon, we  have to measure the fatness of a triangle. So, the next question we ask ourselves is the fatness of any given triangle, the simplest polygon.
+%\item
+%Q3: Can we get the fatness of the triangle using the $\alpha$-fatness using the formula given above, whereas is it possible to use squares instead of circles as we know our boundary is a Polygon with straight lines but not a curve.
+%Q4: About the defnition of the $\alpha-fatness$
+%Q5: Why do we have to discretize the 
+%Q6: Alternative measures like, possibly bad unions of nice polygons or visibility kernal ratio. 
+%Q7: 
+%\end{enumerate}
 
 \section{Implementation}
+
+We plan to implement these measures of polygonal ``fatness'' and compare them
+for assorted collections of polygons, from theoretical and
+randomly-generated examples to historical electoral map data. We hope to
+determine the relative strengths of these measures as heuristics for polygonal
+``fatness'' individually or in an ensemble on this data. 
 
 
 

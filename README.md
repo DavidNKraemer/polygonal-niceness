@@ -32,3 +32,14 @@ fatness of *P* (which allows disks centered anywhere inside *P*, of any radius
 such that the disk does not contain all of *P*), without resorting to the simple
 discretization. Or, can we compute a provable approximation to the exact
 fatness?)
+
+## Questions
+
+1. How is this measure defined wrt multiple vertices, how is radius determined,
+   etc.
+2. Perturbing vertices to the inside?
+3. Must we use balls? Can we use squares (L-Inf balls)?
+4. What is up with discretizing the boundary of *P*?
+5. Alternative measures, such as (possibly bad) unions of nice polygons, or
+   visibility kernel ratio?
+
