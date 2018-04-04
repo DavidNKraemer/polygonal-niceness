@@ -1,12 +1,14 @@
-\documentclass{article}
+\documentclass[10pt]{article}
 
 \usepackage[utf8]{inputenc}
+\usepackage[margin=1in]{geometry}
 \usepackage[]{amsmath}
 \usepackage{amsthm}
 \usepackage{amssymb}
 
 \newcommand{\RR}{\mathbb{R}}
 \newcommand{\abs}[1]{\vert#1\vert}
+\newcommand{\set}[1]{\{#1\}}
 \DeclareMathOperator*{\argmin}{\textrm{arg\,min}}
 
 \theoremstyle{definition}
@@ -22,7 +24,7 @@
 
 \section{Problem Statement} 
 
-[From Professor Mitchell's description.]
+\paragraph{Professor Mitchell's description.}
 Computing the Niceness of a Polygonal Shape. There are various notions of
 quantifying how “nice” or how “fat” a simple polygon $P$ is. A “nicest” polygon
 might be a regular $n$-gon, which most closely approximates a circular disk. This
@@ -37,20 +39,21 @@ user-specified parameter $\delta$.)
 Then, consider discrete choices of radii $r = \rho, 2\rho, 3\rho, \ldots$ for
 disks, $B(p_i,r)$, centered at the discrete boundary points $p_i$, for each
 radius $r$. The (discrete) fatness of $P$ is given by the smallest value of the
-ratio $\lambda (B(p_i,r)\cap P)/\lambda (B(p_i, r)$, over all choices of $p_i$ and $r =
-  \rho, 2\rho, 3\rho, \ldots$ such that $P$ is not contained fully
-  inside$B(p_i,r)$.
+ratio $\lambda (B(p_i,r)\cap P)/\lambda (B(p_i, r))$, over all choices of $p_i$
+and $r = \rho, 2\rho, 3\rho, \ldots$ such that $P$ is not contained fully inside
+$B(p_i,r)$.
 
-Implement and experiment with this fatness measure. It may be possible to use
-the algorithm to assist a project at Harvard on Gerrymandering, where the goal
-is to quantify how “compact” polygonal election districts are. (So I hope that
-at least a couple of people choose to do this project! We can discuss further.)
+  Implement and experiment with this fatness measure. It may be possible to use
+  the algorithm to assist a project at Harvard on Gerrymandering, where the goal
+  is to quantify how “compact” polygonal election districts are. (So I hope that
+  at least a couple of people choose to do this project! We can discuss
+further.)
 
 (Theoretically, we are interested in finding an algorithm to compute the “exact”
-fatness of $P$ (which allows disks centered anywhere inside $P$, of any radius
-such that the disk does not contain all of $P$), without resorting to the simple
-discretization. Or, can we compute a provable approximation to the exact
-fatness?)
+  fatness of $P$ (which allows disks centered anywhere inside $P$, of any radius
+  such that the disk does not contain all of $P$), without resorting to the
+  simple discretization. Or, can we compute a provable approximation to the
+exact fatness?)
 
 \section{Definitions}
 
@@ -77,7 +80,7 @@ $y$ to $x$ with $[x,y]$.
   Let $f : \mathcal{P} \to \RR$. For a given $P \in \mathcal{P}$,
   its \emph{chord-$f$ score} is given by
   \begin{equation*}
-    s_f(P) = \min_{x,y \in P} \max(f(P'), f(P''))
+    s_f(P) = \inf_{x,y \in \partial P} \max(f(P'), f(P''))
   \end{equation*}
   where the chord $[x,y]$ partitions $P = P' \cup P''$.
 \end{definition}
@@ -105,20 +108,27 @@ If $P$ is a regular $n$-gon or convex $s_{\textrm{vis}}(P) = 1$, since trivially
 $\ker P = P$. On the other hand, if $P$ is not star shaped, then
 $s_{\textrm{vis}}(P) = 0$.
 
-%\section{Inferences and Questions}
-%The decomposition of the polygon results in some fat Polygons as well as some bad Polygons. We see that a fat Polygon is made a bad Polygon by inserting the bad polygon. This makes me wonder about the union of the Simple Polygons NICE+BAD, BAD+BAD, NICE+NICE. 
-%\subsubsection{Questions} 
-%\begin{enumerate}
-%\item Q1: Given a Simple Polygon, does it fatness depend on the fatness of the
-%  individual polygons its made of?
-%\item Q2: So, for an individual polygon, without loss of generality lets assume that every Simple Polygon is made up of triangles. So, to measure the fatness of a polygon, we  have to measure the fatness of a triangle. So, the next question we ask ourselves is the fatness of any given triangle, the simplest polygon.
-%\item
-%Q3: Can we get the fatness of the triangle using the $\alpha$-fatness using the formula given above, whereas is it possible to use squares instead of circles as we know our boundary is a Polygon with straight lines but not a curve.
-%Q4: About the defnition of the $\alpha-fatness$
-%Q5: Why do we have to discretize the 
-%Q6: Alternative measures like, possibly bad unions of nice polygons or visibility kernal ratio. 
-%Q7: 
-%\end{enumerate}
+Equipped with an $L_p$ norm ($p \in [1,\infty]$), denote by $B(x,\rho)$ the
+closed ball of radius $\rho > 0$ centered at $x \in \RR^2$.  The natural choice
+is simply the Euclidean norm, but $L_{\infty}$ provides a setting for which
+computing $B(x,\rho) \cap P$ resolves to polygonal intersection. By topological
+equivalence, we lose no specificity. A final measure of ``fatness'' measures
+local nonconvexities of $P$ and identifies the most offending ratio.
+\begin{definition}
+  The \emph{$\alpha$-fatness score} is given by
+  \begin{equation*}
+    \alpha(P) = \inf\set{\frac{\lambda(B(x,\rho) \cap
+    P)}{\lambda(B(x,\rho))} : x \in \partial P, \rho > 0, P \not\subseteq B(x,\rho)}
+  \end{equation*}
+\end{definition}	
+
+For a given $S \subseteq \RR^2$, let $\mathcal{C}(x,S)$ denote the connected
+component of $S$ containing $x$. An alternative formulation of $\alpha$-fatness
+replaces $B(x,\rho) \cap P$ with its connected component: $\mathcal{C}(x,
+B(x,\rho) \cap P)$. In principle, $\alpha(P)$ is computed by sweeping
+continuously, but for simplicity we can merely discretize $\partial P$ with a
+parameter $\delta > 0$ indicating the maximal distance between points in
+$\partial P$.
 
 \section{Implementation}
 
@@ -127,7 +137,5 @@ for assorted collections of polygons, from theoretical and
 randomly-generated examples to historical electoral map data. We hope to
 determine the relative strengths of these measures as heuristics for polygonal
 ``fatness'' individually or in an ensemble on this data. 
-
-
 
 \end{document}
