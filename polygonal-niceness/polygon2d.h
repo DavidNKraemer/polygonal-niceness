@@ -18,16 +18,20 @@ class Polygon2D {
   public:
     Polygon2D(Polygon_2 p) : _pol(p) {}
 
-    void refine(double delta_sqr);
-    bool is_refined(double delta_sqr);
+    bool is_refined(double delta);
     double area() { return _pol.area(); }
     bool is_convex() { return _pol.is_convex(); }
     bool is_simple() { return _pol.is_simple(); }
+    int size() { return _pol.size(); }
+    int* begin() { return _pol.begin(); }
+    int* end() { return _pol.end(); }
 
     Point_2 operator[](int index) { return _pol[index]; }
     
   private:
     Polygon_2 _pol;
 };
+
+Polygon2D refine(Polygon2D p, double delta_sqr);
 
 #endif

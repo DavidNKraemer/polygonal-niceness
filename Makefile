@@ -1,8 +1,8 @@
-######################## CONFIGURATION ########################################
+####################### CONFIGURATION ########################################
 
 # C++ compiler and compling flags
 CC := g++
-CFLAGS := -Wall -Wextra -g -std=c++11
+CFLAGS := -Wall -Wextra -g -std=c++14
 
 # Directories
 BUILDDIR := build
@@ -25,7 +25,7 @@ LIBS := -lCGAL
 # dependencies, your headers that are depended by objs
 # note that in general, you need to group objs for different
 # deps
-DEPS :=
+DEPS := $(SRCDIR)/polygon2d.h
 
 # Formatting
 
@@ -72,7 +72,7 @@ plots: $(DATA)
 
 $(TARGET): $(OBJECTS)
 	@echo "$(COM_C)$(BF)$(LNK_S)$(NM)$(NO_C) $(OBJECTS)"
-	@echo "    $(UL)$(CC) $^ $(LIBS) -o $(TARGET) $(NM)"
+	@echo "    $(BF)$(CC) $^ $(LIBS) -o $(TARGET) $(NM)"
 	@$(CC) $^ $(LIBS) -o $(TARGET) 
 
 $(BUILDDIR)/%.o: $(SRCDIR)/%.$(SRCEXT)
