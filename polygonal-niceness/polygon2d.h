@@ -14,11 +14,18 @@ typedef K::Segment_2 Segment_2;
 typedef CGAL::Polygon_2<K> Polygon_2;
 typedef K::Intersect_2 Intersect_2;
 
+class Segment2D {
+  public:
+    Segment2D(Point_2 p1, Point_2 p2) : _seg(p1, p2) {}
+  private:
+    Segment_2 _seg;
+};
+
 class Polygon2D {
   public:
     Polygon2D(Polygon_2 p) : _pol(p) {}
 
-    bool is_refined(double delta);
+    bool is_refined_by(double delta);
     double area() { return _pol.area(); }
     bool is_convex() { return _pol.is_convex(); }
     bool is_simple() { return _pol.is_simple(); }
@@ -32,6 +39,9 @@ class Polygon2D {
     Polygon_2 _pol;
 };
 
-Polygon2D refine(Polygon2D &p, double delta_sqr);
+bool is_chord(Segment2D seg, Polygon2D p);
+
+Polygon2D refinement_by(Polygon2D &p, double delta_sqr);
+double chord_f_score(Polygon2D &p, std::function<double(Polygon2D)> f);
 
 #endif
