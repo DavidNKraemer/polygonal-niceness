@@ -10,15 +10,22 @@ int main() {
 
   auto delta = 0.5;
 
+  std::cout << "Polygon P: " << n << "-roots of unity." << std::endl;
+  std::cout << delta << "-refined? " << (p.is_refined(delta) ? "Yes" : "No") << std::endl;
+
+  std::cout << "Points of P:" << std::endl;
   for (int i = 0; i < p.size(); i++)
     std::cout << p[i] << std::endl;
 
   std::cout << std::endl;
 
+  Polygon2D q = refine(p, delta);
 
+  std::cout << "Polygon Q: " << delta << "-refinement of P." << std::endl;
+  std::cout << delta << "-refined? " << (q.is_refined(delta) ? "Yes" : "No") << std::endl;
 
-  Polygon2D q= refine(p, delta);
-  for (auto v : p)
+  std::cout << "Points of Q:" << std::endl;
+  for (auto v : q)
     std::cout << v << std::endl;
 
 

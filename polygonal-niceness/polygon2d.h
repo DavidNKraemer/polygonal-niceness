@@ -23,8 +23,8 @@ class Polygon2D {
     bool is_convex() { return _pol.is_convex(); }
     bool is_simple() { return _pol.is_simple(); }
     int size() { return _pol.size(); }
-    int* begin() { return _pol.begin(); }
-    int* end() { return _pol.end(); }
+    auto begin() { return _pol.vertices_begin(); }
+    auto end() { return _pol.vertices_end(); }
 
     Point_2 operator[](int index) { return _pol[index]; }
     
@@ -32,6 +32,6 @@ class Polygon2D {
     Polygon_2 _pol;
 };
 
-Polygon2D refine(Polygon2D p, double delta_sqr);
+Polygon2D refine(Polygon2D &p, double delta_sqr);
 
 #endif
