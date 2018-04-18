@@ -17,7 +17,7 @@ Polygon2D refinement_by(Polygon2D &p, double delta)
     points.push_back(Point_2(p[i].x(), p[i].y()));
 
     // is there another point? if so, that's next; otherwise, next is the start.
-    next = (i + 1 < p.size()) ? p[i+1] : p[0];
+    next = p[(i + 1) % p.size()];
 
     // compute the distance between the points
     auto current = points.back();
@@ -29,7 +29,6 @@ Polygon2D refinement_by(Polygon2D &p, double delta)
       // add new points according to an equidistance scheme
 
       auto insertions = std::ceil(dist / delta); // number of new points needed
-
 
       // parameterize the line segment 
       auto x0 = current.x();
@@ -44,7 +43,6 @@ Polygon2D refinement_by(Polygon2D &p, double delta)
 
       for (int j = 1; j < insertions; j++)
       {
-
         // insert a new point
         points.push_back(Point_2(x0 + j * dx, y0 + j * dy));
       }
@@ -63,23 +61,19 @@ Polygon2D refinement_by(Polygon2D &p, double delta)
 bool Polygon2D::is_refined_by(double delta)
 {
   auto delta_sqr = delta * delta;
-  auto origin = _pol.vertices_begin();
+  auto origin = _pol[0];
   auto current = origin;
-  auto next = current;
+  auto next = origin;
 
-  auto traversing = true;
-
-  do 
+  for (unsigned int i = 0; i < _pol.size(); i++)
   {
-
-    ++next;
-    traversing = (*next == *origin);
-    auto dist_sqr = CGAL::squared_distance(*current, *next);
+    next = _pol[(i+1) % _pol.size()];
+    auto dist_sqr = CGAL::squared_distance(current, next);
     if (delta_sqr < dist_sqr)
     {
       return false;
     }
-  } while (traversing);
+  } 
 
   return true;
 }
@@ -140,6 +134,11 @@ double chord_f_score(Polygon2D &p, std::function<double(Polygon2D)> f)
 
   return min;
 }
+
+/* 
+ * The following is lifted almost entirely from O'Rourke's text, "Computational
+ * Geometry in C".
+ */
 
 bool is_chord(Segment2D seg, Polygon2D p) 
 {

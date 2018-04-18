@@ -1,8 +1,7 @@
-#ifndef POLYGON_2D_H
-#define POLYGON_2D_H
+#ifndef _POLYGON_2D_H
+#define _POLYGON_2D_H
 #include <CGAL/Simple_cartesian.h>
 #include <CGAL/Polygon_2.h>
-//#include <CGAL/Intersection_2.h>
 #include <cmath>
 
 template<typename T>
