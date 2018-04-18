@@ -1,14 +1,14 @@
-#include "utils.h"
-
-std::vector<std::vector<double>> generate_data(
-    std::function<Polygon2D(int)> poly_generator,
-    std::tuple<const int, const int, const int> n_range,
-    std::tuple<const double, const double, const int> delta_linspace,
-    std::function<double(Polygon2D)> measurement)
+#include "io_utils.h"
+  std::vector<std::vector<double>> generate_data(
+      std::function<Polygon2D(int)> poly_generator,
+      std::tuple<const int, const int, const int> n_range,
+      std::tuple<const double, const double, const int> delta_linspace,
+      std::function<double(Polygon2D)> measurement)
 {
 
   std::vector<std::vector<double>> data(0);
-  for (int n = std::get<0>(n_range); n < std::get<1>(n_range); n += std::get<2>(n_range))
+  for (int n = std::get<0>(n_range); n < std::get<1>(n_range); 
+      n += std::get<2>(n_range))
   {
     std::vector<double> ndata(0);
 
@@ -43,20 +43,24 @@ void write_data(
 {
   // open up the output file
   std::ofstream outfile(output_file);
+  unsigned int cell_counter = 0;
 
   // write the header row
   for (auto &header_cell: header)
   {
-      outfile << header_cell << ",";
+    cell_counter++;
+    outfile << header_cell << ((cell_counter == header.size()) ? "" : ",");
   }
   outfile << std::endl;
 
   // write the data
   for (auto &row: data)
   { // for each row of the data...
+    cell_counter = 0;
     for (auto &cell: row)
     { // for each cell in the row...
-      outfile << cell << ",";
+      cell_counter++;
+      outfile << cell << ((cell_counter == row.size()) ? "" : ",");
     }
     outfile << std::endl;
   }

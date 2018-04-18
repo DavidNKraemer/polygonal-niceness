@@ -21,4 +21,4 @@ std::function<double(Polygon2D)> chord_area_measurement = [](Polygon2D p) {
     return p.area() / regular_ngon_area_normalizer(p.size()); 
 };
 
-#define
+#endif

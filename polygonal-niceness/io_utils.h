@@ -1,5 +1,5 @@
-#ifndef _UTILS_H
-#define _UTILS_H
+#ifndef _IO_UTILS_H
+#define _IO_UTILS_H
 #include "polygon2d.h"
 #include <vector>
 #include <string>
