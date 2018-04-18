@@ -1,20 +1,23 @@
 ####################### CONFIGURATION ########################################
 
+# Preliminaries
+SHELL = /bin/sh
+
 # C++ compiler and compling flags
 CC := g++
-CFLAGS := -Wall -Wextra -g -std=c++14
+CFLAGS := -Wall -Wextra -g -std=c++14 -MMD -MP
 
 # Directories
-BUILDDIR := build
-SRCDIR := polygonal-niceness 
-DATADIR := data
+BUILD_DIR := ./build# this ./ is critical
+SRC_DIR := polygonal-niceness
+DATA_DIR := data
 TARGET := bin/main
 MISC := *.txt
 
-SRCEXT := cpp
-SOURCES := $(shell find $(SRCDIR) -type f -name *.$(SRCEXT))
-OBJECTS := $(patsubst $(SRCDIR)/%,$(BUILDDIR)/%,$(SOURCES:.$(SRCEXT)=.o))
-DATA := $(shell find $(DATADIR) -type f -name *.txt)
+SRC_EXT := cpp
+SRCS := $(shell find $(SRC_DIR) -type f -name *.$(SRC_EXT))
+OBJS := $(patsubst $(SRC_DIR)/%,$(BUILD_DIR)/%,$(SRCS:.$(SRC_EXT)=.o))
+DATA := $(shell find $(DATADIR) -type f -name *.csv)
 INC := -I include
 
 # linking flags, "-L/path/to/your/libs"
@@ -25,7 +28,36 @@ LIBS := -lCGAL
 # dependencies, your headers that are depended by objs
 # note that in general, you need to group objs for different
 # deps
-DEPS := $(SRCDIR)/polygon2d.h
+DEPS := $(OBJS:.o=.d)
+
+# suffix rule
+.SUFFIXES: .cpp .cc .c++ .h .hpp .hh .h++
+
+.cpp.o:
+	$(CC) $(CFLAGS) -c $< -o $@
+
+############## RULES ##################
+
+# Commands #
+#
+default: $(TARGET)
+	$(TARGET)
+
+$(TARGET): $(OBJS)
+	$(CC) $^ $(LIBS) -o $@
+
+$(BUILD_DIR)/%.o: $(SRC_DIR)/%.$.cpp
+	mkdir -p $(BUILD_DIR)
+	$(CC) $(CFLAGS) $(INC) -c -o $@ $<
+
+
+clean:
+	$(RM) -r $(BUILDDIR) $(TARGET) $(MISC);
+
+.PHONY: clean
+
+-include $(DEPS)
+
 
 # Formatting
 
@@ -53,37 +85,26 @@ LNK_S := "Linking:"
 CLN_S := "Cleaning:"
 
 
-# suffix rule
-.SUFFIXES: .cpp .cc .c++ .h .hpp .hh .h++ .o
+# $(TARGET_EXEC): $(OBJS)
+# 	@echo "$(COM_C)$(BF)$(LNK_S)$(NM)$(NO_C) $(OBJECTS)"
+# 	@echo "    $(BF)$(CC) $^ $(LIBS) -o $(TARGET) $(NM)"
+# 	@$(CC) $^ $(LIBS) -o $@
+# 
+# $(BUILD_DIR)/%.cpp.o: %.cpp
+# 	@echo "$(COM_C)$(BF)$(COM_S)$(NM)$(NO_C)"
+# 	@echo "    $(UL)$(CC) $(CFLAGS) $(INC) -c -o $@ $<$(NM)"
+# 	@mkdir -p $(BUILD_DIR)
+# 	@$(CC) $(CFLAGS) $(INC) -c $< -o $@ 
+# 
+# .PHONY: clean
+# 
+# clean:
+# 	@echo "$(COM_C)$(BF)$(CLN_S)$(NM)$(NO_C)"
+# 	@echo "    $(RM) -r $(BUILDDIR) $(TARGET) $(MISC)";
+# 	@$(RM) -r $(BUILDDIR) $(TARGET) $(MISC);
+# 
+# 
+# -include $(DEPS)
 
-.cpp.o:
-	$(CC) $(CFLAGS) -c $< -o $@
 
-############## RULES ##################
 
-# Commands #
-default: $(TARGET) $(OBJECTS)
-	@echo "$(COM_C)$(BF)Running:$(NM)$(NO_C) $(TARGET)"
-	@$(TARGET)
-
-plots: $(DATA)
-	@echo "plotting data"
-	$(python3 scripts/plot_results.py)
-
-$(TARGET): $(OBJECTS)
-	@echo "$(COM_C)$(BF)$(LNK_S)$(NM)$(NO_C) $(OBJECTS)"
-	@echo "    $(BF)$(CC) $^ $(LIBS) -o $(TARGET) $(NM)"
-	@$(CC) $^ $(LIBS) -o $(TARGET) 
-
-$(BUILDDIR)/%.o: $(SRCDIR)/%.$(SRCEXT)
-	@echo "$(COM_C)$(BF)$(COM_S)$(NM)$(NO_C)"
-	@mkdir -p $(BUILDDIR)
-	@echo "    $(UL)$(CC) $(CFLAGS) $(INC) -c -o $@ $<$(NM)"
-	@$(CC) $(CFLAGS) $(INC) -c -o $@ $<
-
-clean:
-	@echo "$(COM_C)$(BF)$(CLN_S)$(NM)$(NO_C)"
-	@echo "    $(RM) -r $(BUILDDIR) $(TARGET) $(MISC)";
-	@$(RM) -r $(BUILDDIR)/ $(TARGET) $(MISC);
-
-.PHONY: clean plots
