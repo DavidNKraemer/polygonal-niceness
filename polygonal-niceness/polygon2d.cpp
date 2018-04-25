@@ -78,6 +78,7 @@ bool Polygon2D::is_refined_by(double delta)
   return true;
 }
 
+
 double chord_f_score(Polygon2D &p, std::function<double(Polygon2D)> f)
 {
   double min = f(p);
@@ -134,6 +135,62 @@ double chord_f_score(Polygon2D &p, std::function<double(Polygon2D)> f)
 
   return min;
 }
+
+
+double alpha_fatness_score(Polygon2D p)
+{
+  auto min_alpha = std::numeric_limits<double>::infinity();
+  auto bbox_coords = p.bbox_coords();
+
+  for (auto& vertex: p)
+  {
+    auto max_radius = std::max(
+        std::max(vertex.x() - std::get<0>(bbox_coords),
+          std::get<2>(bbox_coords) - vertex.x()),
+        std::max(vertex.y() - std::get<1>(bbox_coords),
+          std::get<3>(bbox_coords) - vertex.y())
+        );
+
+    for (auto k = 50; k < 100; k+= 49) 
+    {
+      auto radius = k * max_radius / 100.;
+      Polygon2D ball = infinity_ball(vertex, radius);
+      auto area = intersection_area(p, ball);
+      min_alpha = std::min(min_alpha, area / (4 * radius * radius));
+    }
+    
+  }
+
+  return min_alpha;
+}
+
+
+Polygon2D infinity_ball(Point_2 &v, double radius)
+{
+  std::vector<Point_2> corners(4);
+
+  corners.push_back(Point_2(v.x() - radius, v.y() - radius));
+  corners.push_back(Point_2(v.x() + radius, v.y() - radius));
+  corners.push_back(Point_2(v.x() + radius, v.y() + radius));
+  corners.push_back(Point_2(v.x() - radius, v.y() + radius));
+  return Polygon2D(Polygon_2(corners.data(), corners.data() + corners.size()));
+}
+
+double intersection_area(Polygon2D &p, Polygon2D &q)
+{
+  std::list<Polygon_with_holes_2> result;
+  CGAL::intersection(p._pol, q._pol, std::back_inserter(result));
+
+  double area = 0.;
+  for (auto iter = result.begin(); iter != result.end(); iter++)
+  {
+    area += iter->outer_boundary().area();
+  }
+
+
+  return area;
+}
+
 
 /* 
  * The following is lifted almost entirely from O'Rourke's text, "Computational

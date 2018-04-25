@@ -5,18 +5,21 @@
 int main() {
   std::function<Polygon2D(int)> generator = nth_roots_of_unity;
 
-  auto data = generate_data(
-      generator,
-      std::make_tuple(3,103,1),
-      std::make_tuple(1e-4,1e-3,3),
-      chord_area_measurement);
+  auto p = generator(4);
+  std::cout << alpha_fatness(p) << std::endl;
 
-  std::vector<std::string> header {"n","1e-4","5e-4","1e-3"};
+  // auto data = generate_data(
+  //     generator,
+  //     std::make_tuple(3,103,1),
+  //     std::make_tuple(1e-4,1e-3,3),
+  //     alpha_fatness);
 
-  write_data (
-      data,
-      header,
-      "data/regular_ngon_chord_area_scores.csv");
+  // std::vector<std::string> header {"n","1e-4","5e-4","1e-3"};
+
+  // write_data (
+  //     data,
+  //     header,
+  //     "data/regular_ngon_alpha_fatness_scores.csv");
 
   return 0;
 }

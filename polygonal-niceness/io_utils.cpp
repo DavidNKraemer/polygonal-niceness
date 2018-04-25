@@ -1,9 +1,11 @@
 #include "io_utils.h"
-  std::vector<std::vector<double>> generate_data(
-      std::function<Polygon2D(int)> poly_generator,
-      std::tuple<const int, const int, const int> n_range,
-      std::tuple<const double, const double, const int> delta_linspace,
-      std::function<double(Polygon2D)> measurement)
+
+
+std::vector<std::vector<double>> generate_data(
+    std::function<Polygon2D(int)> poly_generator, 
+    std::tuple<const int, const int, const int> n_range,
+    std::tuple<const double, const double, const int> delta_linspace,
+    std::function<double(Polygon2D)> measurement)
 {
 
   std::vector<std::vector<double>> data(0);
@@ -35,6 +37,7 @@
 
   return data;
 }
+
 
 void write_data(
     std::vector<std::vector<double>> data, 

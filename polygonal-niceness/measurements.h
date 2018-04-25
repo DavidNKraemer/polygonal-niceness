@@ -1,9 +1,11 @@
 #ifndef _MEASUREMENTS_H
 #define _MEASUREMENTS_H
 
-double farea(Polygon2D p) {
+std::function<double(Polygon2D)> farea = [](Polygon2D p) {
   return p.area();
-}
+};
+
+std::function<double(Polygon2D)> alpha_fatness = alpha_fatness_score;
 
 double regular_ngon_area_normalizer(int n) {
   return n / 2 * std::sin(2 * pi<double> / n);
@@ -17,8 +19,8 @@ Polygon2D nth_roots_of_unity(int n) {
   return Polygon2D(Polygon_2(points, points+n));
 }
 
-std::function<double(Polygon2D)> chord_area_measurement = [](Polygon2D p) { 
-    return p.area() / regular_ngon_area_normalizer(p.size()); 
-};
+//std::function<double(Polygon2D)> chord_area_measurement = [](Polygon2D p) { 
+//    return p.area();
+//};
 
 #endif
