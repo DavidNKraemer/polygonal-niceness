@@ -17,6 +17,7 @@ class Segment2D {
     Segment_2 _seg;
 };
 
+
 class Polygon2D {
   public:
     Polygon2D(Polygon_2 p) : _pol(p) {}
@@ -42,7 +43,9 @@ class Polygon2D {
     Polygon_2 _pol;
 };
 
+
 Polygon2D refinement_by(Polygon2D &p, K::FT delta);
+
 
 std::ostream& operator<<(std::ostream &os, const Point_2 &p);
 std::ostream& operator<<(std::ostream &os, const Segment2D &seg);
