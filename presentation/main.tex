@@ -1,0 +1,92 @@
+\documentclass[draft]{beamer}
+
+\usetheme{Pittsburgh}
+\usecolortheme{dove}
+
+\usepackage[]{amsmath}
+\usepackage{amssymb}
+\usepackage{cmbright}
+\usepackage{bm}
+
+\newcommand{\RR}{\mathbb{R}}
+\newcommand{\abs}[1]{|#1|}
+\newcommand{\set}[1]{\{ #1 \}}
+\newcommand{\defkey}{\textbf}
+
+\title{Measuring polygonal ``niceness''}
+\author[Duppala, Kraemer]{%
+Sharmila Duppala\inst{1}, %
+David Kraemer\inst{1}}
+
+\institute[Stony Brook University]
+{
+  \inst{1}%
+  AMS 545: Computational Geometry \\
+  Stony Brook University
+}
+
+\date[2018]{May 1, 2018}
+
+
+\begin{document}
+
+\frame{\titlepage}
+
+\begin{frame}[t]{Preliminaries}
+  \begin{itemize}
+    \item $\lambda(A)$ is the area of a set $A \subseteq \RR^2$.
+    \item Let $P \subseteq \RR^2$ denote a simple bounded closed polygon.
+    \item $\partial P$ is the boundary of $P$.
+    \item $[x,y]$ is the closed line segment bounded by $x,y \in \RR^2$.
+  \end{itemize}
+\end{frame}
+
+\begin{frame}[t]{Measures of ``niceness''}
+  \begin{definition}[$\alpha$-fatness]
+    The \defkey{$\bm{\alpha}$-fatness score} is given by
+    \begin{equation*}
+      \alpha(P) = \inf\set{
+        \frac{\lambda(B(x, \rho) \cap P)}{\lambda(B(x, \rho))} :
+        x \in \partial P, \rho > 0, P \not\subseteq B(x, \rho)
+      }
+    \end{equation*}
+  \end{definition}
+  \begin{itemize}
+    \item For every point $x \in \partial P$, sweep through all balls of radius
+      $\rho$, centered at $x$, that don't contain $P$.
+    \item Compute the proportion of area covered by both $P$ and $B(x,\rho)$.
+    \item Find the smallest such proportion. This is $\alpha(P)$.
+    \item It's much easier when the ball is a square!
+  \end{itemize}
+\end{frame}
+
+\begin{frame}[t]{Measures of ``niceness''}
+  \begin{definition}[Chord-area]
+    The \defkey{chord-area score} is given by
+    \begin{equation*}
+      s_\lambda(P) =
+      \inf_{x,y \in \partial P} \max( \lambda(P'), \lambda(P'')),
+    \end{equation*}
+    where the chord $[x,y]$ partitions $P = P' \cup P''$.
+  \end{definition}
+  \begin{itemize}
+    \item This is a ``minimax''-esque definition. We want the least bad resulting split.
+  \end{itemize}
+\end{frame}
+
+\begin{frame}[t]{Implementation}
+  \begin{itemize}
+    \item The measurements were implemented in C++ using CGAL with exact
+      arithmetic kernel.
+    \item We used a $\delta$-boundary discretizing scheme: the length of $[x_k,
+      x_{k+1}]$ is at most $\delta > 0$ for consecutive boundary vertices.
+    \item Generating useful test polygons was tricky.
+    \item We ran our measurements on [THESE CLASSES OF POLYGONS].
+  \end{itemize}
+\end{frame}
+
+\begin{frame}[t]{Results}
+  
+\end{frame}
+
+\end{document}
