@@ -34,9 +34,10 @@ bool Polygon2D::is_refined_by(K::FT delta)
   return true;
 }
 
+
 Polygon2D refinement_by(Polygon2D &p, K::FT delta)
 {
-  auto points = std::vector<Point_2>(p.size());
+  auto points = std::vector<Point_2>();
   auto next = p[0];
 
   for (int i = 0; i < p.size(); i++) 
@@ -58,7 +59,6 @@ Polygon2D refinement_by(Polygon2D &p, K::FT delta)
 void _compute_edge_refinement(Point_2 source, Point_2 target, 
     K::FT delta, std::vector<Point_2> &points)
 {
-  points.push_back(Point_2(source.x(), source.y()));
   auto curr = source;
   auto next = target;
   auto temp = next;
@@ -80,7 +80,36 @@ void _compute_edge_refinement(Point_2 source, Point_2 target,
     }
   }
 
-  points.push_back(Point_2(target.x(), target.y()));
-
 }
+
+
+
+std::ostream& operator<<(std::ostream &os, const Point_2 &p)
+{
+  os << "(" << p.x() << "," << p.y() << ")";
+  return os;
+}
+
+std::ostream& operator<<(std::ostream &os, const Segment2D &seg)
+{
+  os << "[" << seg.source() << "," << seg.target() << "]";
+  return os;
+}
+
+std::ostream& operator<<(std::ostream &os, const Polygon2D &pol)
+{
+  os << "<";
+  for (int i = 0; i < pol.size(); i++)
+  {
+    os << pol[i];
+    if (i + 1 < pol.size())
+    {
+      os << ",";
+    }
+  }
+  os << ">";
+
+  return os;
+}
+
 

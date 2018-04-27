@@ -7,9 +7,10 @@
 
 int main()
 {
-  std::cout << "Hello world!" << std::endl;
-  // auto p = square_of_length(12);
-  // std::cout << chord_f_score(p, chord_area_measurement) << std::endl;
+  auto p = square_of_length(12);
+  std::cout << p << std::endl;
+  auto q = refinement_by(p, 4);
+  std::cout << q << std::endl;
 
   // auto data = generate_data(
   //     generator,

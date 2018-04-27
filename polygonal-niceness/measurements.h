@@ -18,7 +18,7 @@ Polygon2D square_of_length(int n)
   points[0] = Point_2(0,0);
   points[1] = Point_2(n,0);
   points[2] = Point_2(n,n);
-  points[2] = Point_2(0,n);
+  points[3] = Point_2(0,n);
   return Polygon2D(Polygon_2(points, points+4));
 }
 
