@@ -1,18 +1,18 @@
 #include "io_utils.h"
 
 
-std::vector<std::vector<double>> generate_data(
+std::vector<std::vector<K::FT>> generate_data(
     std::function<Polygon2D(int)> poly_generator, 
     std::tuple<const int, const int, const int> n_range,
-    std::tuple<const double, const double, const int> delta_linspace,
-    std::function<double(Polygon2D)> measurement)
+    std::tuple<const K::FT, const K::FT, const int> delta_linspace,
+    std::function<K::FT(Polygon2D)> measurement)
 {
 
-  std::vector<std::vector<double>> data(0);
+  std::vector<std::vector<K::FT>> data(0);
   for (int n = std::get<0>(n_range); n < std::get<1>(n_range); 
       n += std::get<2>(n_range))
   {
-    std::vector<double> ndata(0);
+    std::vector<K::FT> ndata(0);
 
     // label the nth row
     ndata.push_back(n);
@@ -26,7 +26,7 @@ std::vector<std::vector<double>> generate_data(
         std::get<2>(delta_linspace);
 
       // refine p for the next delta
-      Polygon2D q = refinement_by(p, delta);
+      Polygon2D q = refinement_by(p, (K::FT) delta);
 
       // compute the corresponding measurement and store the result
       ndata.push_back(measurement(q));
@@ -40,7 +40,7 @@ std::vector<std::vector<double>> generate_data(
 
 
 void write_data(
-    std::vector<std::vector<double>> data, 
+    std::vector<std::vector<K::FT>> data, 
     std::vector<std::string> header,
     std::string output_file)
 {

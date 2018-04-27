@@ -1,12 +1,15 @@
+#include "kernel_specs.h"
 #include "polygon2d.h"
+#include "niceness_functions.h"
 #include "io_utils.h"
 #include "measurements.h"
 
-int main() {
-  std::function<Polygon2D(int)> generator = nth_roots_of_unity;
 
-  auto p = generator(4);
-  std::cout << alpha_fatness(p) << std::endl;
+int main()
+{
+  std::cout << "Hello world!" << std::endl;
+  // auto p = square_of_length(12);
+  // std::cout << chord_f_score(p, chord_area_measurement) << std::endl;
 
   // auto data = generate_data(
   //     generator,

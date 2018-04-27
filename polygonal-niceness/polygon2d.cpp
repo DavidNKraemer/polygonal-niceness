@@ -1,64 +1,20 @@
 #include "polygon2d.h"
+
+
 #include <CGAL/squared_distance_2.h>
-#include <iostream>
+#include <CGAL/Boolean_set_operations_2.h>
+
+
 #include <vector>
-
-#define XOR(lb,rb) (!(lb) ^ !(rb))
-
-Polygon2D refinement_by(Polygon2D &p, double delta)
-{
-  auto points = std::vector<Point_2>(p.size());
-  auto next = p[0];
-
-  for (int i = 0; i < p.size(); i++) 
-  { // for each existing point in p,
-
-    // add the point to the new polygon
-    points.push_back(Point_2(p[i].x(), p[i].y()));
-
-    // is there another point? if so, that's next; otherwise, next is the start.
-    next = p[(i + 1) % p.size()];
-
-    // compute the distance between the points
-    auto current = points.back();
-    auto dist_sqr = CGAL::squared_distance(next, current);
-    auto dist = std::sqrt(dist_sqr); // actual distance is needed, unfortunately
-
-    if (delta*delta < dist_sqr) 
-    { // if the distance is too big,
-      // add new points according to an equidistance scheme
-
-      auto insertions = std::ceil(dist / delta); // number of new points needed
-
-      // parameterize the line segment 
-      auto x0 = current.x();
-      auto y0 = current.y();
-      auto dx = next.x() - x0;
-      auto dy = next.y() - y0;
-
-      // normalize
-      dx /= insertions;
-      dy /= insertions;
+#include <stack>
+#include <limits>
 
 
-      for (int j = 1; j < insertions; j++)
-      {
-        // insert a new point
-        points.push_back(Point_2(x0 + j * dx, y0 + j * dy));
-      }
-    }
-  }
+void _compute_edge_refinement(Point_2 source, Point_2 target, K::FT delta, std::vector<Point_2> &points);
 
-  points.shrink_to_fit();
-  return Polygon2D(
-      Polygon_2(
-        points.data(),
-        points.data() + points.size()
-        )
-      );
-}
 
-bool Polygon2D::is_refined_by(double delta)
+
+bool Polygon2D::is_refined_by(K::FT delta)
 {
   auto delta_sqr = delta * delta;
   auto origin = _pol[0];
@@ -78,193 +34,53 @@ bool Polygon2D::is_refined_by(double delta)
   return true;
 }
 
-
-double chord_f_score(Polygon2D &p, std::function<double(Polygon2D)> f)
+Polygon2D refinement_by(Polygon2D &p, K::FT delta)
 {
-  double min = f(p);
+  auto points = std::vector<Point_2>(p.size());
+  auto next = p[0];
 
-  // Loop through all possible pairs of vertices in p
-  for (int i = 0; i < p.size(); i++)
+  for (int i = 0; i < p.size(); i++) 
+  { // for each existing point in p,
+
+    // add the point to the new polygon
+    _compute_edge_refinement(p[i], p[(i + 1) % p.size()], delta, points);
+  }
+
+  points.shrink_to_fit();
+  return Polygon2D(
+      Polygon_2(
+        points.data(),
+        points.data() + points.size()
+        )
+      );
+}
+
+void _compute_edge_refinement(Point_2 source, Point_2 target, 
+    K::FT delta, std::vector<Point_2> &points)
+{
+  points.push_back(Point_2(source.x(), source.y()));
+  auto curr = source;
+  auto next = target;
+  auto temp = next;
+  std::stack<Point_2> next_stack;
+  next_stack.push(target);
+
+  while (curr != next)
   {
-    for (int j = i+1; j < p.size(); j++)
+    if (delta * delta < CGAL::squared_distance(curr, next))
     {
-      // Test that the segment [p[i],p[j]] is a chord of p
-      if (is_chord(Segment2D(p[i],p[j]), p)) 
-      {
-        // NOTE: this is almost certainly an inefficient way of doing this, but
-        // whatever.
-        auto left_points = std::vector<Point_2>(j - i + 1);
-        auto right_points = std::vector<Point_2>(p.size() - j + 1 + i);
-
-        // insert the points which are between p[i] and p[j] to the "left" 
-        for (auto k = i; k <= j; k++) 
-        { 
-          left_points.push_back(p[k]);
-        }
-
-        // insert the points which are between p[i] and p[j] to the "right"
-        for (auto k = j; k < p.size(); k++) 
-        { // this half of the insertion is until the end of the polygon
-          right_points.push_back(p[k]);
-        }
-
-        for (auto k = 0; k <= i; k++)
-        { // this half of the insertion is from the beginning of the polygon until i
-          right_points.push_back(p[k]);
-        }
-
-        // compute the sub-polygons
-        Polygon2D left_sub(
-            Polygon_2(
-              left_points.data(),
-              left_points.data() + left_points.size()
-            ));
-
-        Polygon2D right_sub(
-            Polygon_2(
-              right_points.data(),
-              right_points.data() + right_points.size()
-              ));
-        
-        // update the minimum f-score
-        min = std::fmin(min, std::fmax(f(left_sub), f(right_sub)));
-      }
+      next_stack.push(next);
+      next = CGAL::midpoint(curr, next);
+    }
+    else {
+      points.push_back(Point_2(next.x(), next.y()));
+      curr = next;
+      next = next_stack.top();
+      next_stack.pop();
     }
   }
 
+  points.push_back(Point_2(target.x(), target.y()));
 
-  return min;
 }
 
-
-double alpha_fatness_score(Polygon2D p)
-{
-  auto min_alpha = std::numeric_limits<double>::infinity();
-  auto bbox_coords = p.bbox_coords();
-
-  for (auto& vertex: p)
-  {
-    auto max_radius = std::max(
-        std::max(vertex.x() - std::get<0>(bbox_coords),
-          std::get<2>(bbox_coords) - vertex.x()),
-        std::max(vertex.y() - std::get<1>(bbox_coords),
-          std::get<3>(bbox_coords) - vertex.y())
-        );
-
-    for (auto k = 50; k < 100; k+= 49) 
-    {
-      auto radius = k * max_radius / 100.;
-      Polygon2D ball = infinity_ball(vertex, radius);
-      auto area = intersection_area(p, ball);
-      min_alpha = std::min(min_alpha, area / (4 * radius * radius));
-    }
-    
-  }
-
-  return min_alpha;
-}
-
-
-Polygon2D infinity_ball(Point_2 &v, double radius)
-{
-  std::vector<Point_2> corners(4);
-
-  corners.push_back(Point_2(v.x() - radius, v.y() - radius));
-  corners.push_back(Point_2(v.x() + radius, v.y() - radius));
-  corners.push_back(Point_2(v.x() + radius, v.y() + radius));
-  corners.push_back(Point_2(v.x() - radius, v.y() + radius));
-  return Polygon2D(Polygon_2(corners.data(), corners.data() + corners.size()));
-}
-
-double intersection_area(Polygon2D &p, Polygon2D &q)
-{
-  std::list<Polygon_with_holes_2> result;
-  CGAL::intersection(p._pol, q._pol, std::back_inserter(result));
-
-  double area = 0.;
-  for (auto iter = result.begin(); iter != result.end(); iter++)
-  {
-    area += iter->outer_boundary().area();
-  }
-
-
-  return area;
-}
-
-
-/* 
- * The following is lifted almost entirely from O'Rourke's text, "Computational
- * Geometry in C".
- */
-
-bool is_chord(Segment2D seg, Polygon2D p) 
-{
-  for (auto i = 0; i < p.size(); i++)
-  {
-    auto j = (i + 1) % p.size();
-    if ((p[i] != seg.source()) && (p[j] != seg.source())
-      && (p[i] != seg.target()) && (p[j] != seg.target())
-        && intersect(seg, Segment2D(p[i], p[j])))
-        {
-          return false;
-        }
-  }
-  return true;
-}
-
-bool intersect(Segment2D s1, Segment2D s2) 
-{
-  return intersect_properly(s1, s2) ||
-    is_between(s1, s2.source()) ||
-    is_between(s1, s2.target()) ||
-    is_between(s2, s1.source()) ||
-    is_between(s2, s1.target());
-}
-
-bool is_between(Segment2D seg, Point_2 p) 
-{
-  if (!is_collinear(seg, p)) 
-  {
-    return false;
-  }
-
-  if (seg.source().x() != seg.target().x())
-  {
-    return ((seg.source().x() <= p.x()) && (p.x() <= seg.target().x())) || 
-      ((seg.source().x() >= p.x()) && (p.x() >= seg.target().x()));
-  } 
-  else
-  {
-    return ((seg.source().y() <= p.y()) && (p.y() <= seg.target().y())) || 
-      ((seg.source().y() >= p.y()) && (p.y() >= seg.target().y()));
-  }
-}
-
-bool intersect_properly(Segment2D s1, Segment2D s2)
-{
-  if (is_collinear(s1, s2.source()) ||
-      is_collinear(s1, s2.target()) ||
-      is_collinear(s2, s1.source()) ||
-      is_collinear(s2, s1.target()))
-  {
-    return false;
-  }
-
-  return XOR(is_left(s1, s2.source()), is_left(s1, s2.target())) &&
-    XOR(is_left(s2, s1.source()), is_left(s2, s1.target()));
-}
-
-bool is_collinear(Segment2D seg, Point_2 p)
-{
-  return area(seg.source(), seg.target(), p) == 0.;
-}
-
-bool is_left(Segment2D seg, Point_2 p)
-{
-  return area(seg.source(), seg.target(), p) > 0.;
-}
-
-double area(Point_2 p, Point_2 q, Point_2 r)
-{
-  return (double) CGAL::area(p, q, r);
-}

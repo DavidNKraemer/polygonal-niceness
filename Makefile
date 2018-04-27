@@ -23,7 +23,7 @@ INC := -I include
 # linking flags, "-L/path/to/your/libs"
 LDFLAGS :=
 # libraries, either "/path/to/static/libs.a" or just -llibs
-LIBS := -lCGAL
+LIBS := -lCGAL -lgmp -lmpfr -lboost_thread
 
 # dependencies, your headers that are depended by objs
 # note that in general, you need to group objs for different
@@ -44,7 +44,7 @@ default: $(TARGET)
 	$(TARGET)
 
 $(TARGET): $(OBJS)
-	$(CC) $^ $(LIBS) -o $@
+	$(CC) $^ -o $@ $(LIBS) 
 
 $(BUILD_DIR)/%.o: $(SRC_DIR)/%.$.cpp
 	mkdir -p $(BUILD_DIR)
