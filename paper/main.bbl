@@ -1,0 +1,130 @@
+% $ biblatex auxiliary file $
+% $ biblatex bbl format version 2.9 $
+% Do not modify the above lines!
+%
+% This is an auxiliary file used by the 'biblatex' package.
+% This file may safely be deleted. It will be recreated by
+% biber as required.
+%
+\begingroup
+\makeatletter
+\@ifundefined{ver@biblatex.sty}
+  {\@latex@error
+     {Missing 'biblatex' package}
+     {The bibliography requires the 'biblatex' package.}
+      \aftergroup\endinput}
+  {}
+\endgroup
+
+
+\refsection{0}
+  \datalist[entry]{ynt/global//global/global}
+    \entry{10.2307/30044198}{article}{}
+      \name{author}{1}{}{%
+        {{hash=721115397e365146189fed1e8afc269e}{%
+           family={Wang},
+           familyi={W\bibinitperiod},
+           given={Xianfu},
+           giveni={X\bibinitperiod}}}%
+      }
+      \list{publisher}{1}{%
+        {Mathematical Association of America}%
+      }
+      \strng{namehash}{721115397e365146189fed1e8afc269e}
+      \strng{fullhash}{721115397e365146189fed1e8afc269e}
+      \strng{bibnamehash}{721115397e365146189fed1e8afc269e}
+      \strng{authorbibnamehash}{721115397e365146189fed1e8afc269e}
+      \strng{authornamehash}{721115397e365146189fed1e8afc269e}
+      \strng{authorfullhash}{721115397e365146189fed1e8afc269e}
+      \field{labelalpha}{Wan05}
+      \field{sortinit}{2}
+      \field{sortinithash}{cbff857e587bcb4635511624d773949e}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{issn}{0025570X, 19300980}
+      \field{journaltitle}{Mathematics Magazine}
+      \field{number}{5}
+      \field{title}{Volumes of Generalized Unit Balls}
+      \field{volume}{78}
+      \field{year}{2005}
+      \field{pages}{390\bibrangedash 395}
+      \range{pages}{6}
+      \verb{urlraw}
+      \verb http://www.jstor.org/stable/30044198
+      \endverb
+      \verb{url}
+      \verb http://www.jstor.org/stable/30044198
+      \endverb
+    \endentry
+    \entry{cgal:gw-p2-18a}{incollection}{}
+      \name{author}{2}{}{%
+        {{hash=c77139b8c06b437d50a0a723fad2816a}{%
+           family={Giezeman},
+           familyi={G\bibinitperiod},
+           given={Geert-Jan},
+           giveni={G\bibinithyphendelim J\bibinitperiod}}}%
+        {{hash=6ba59ff5eb7417b10406bf339bee807e}{%
+           family={Wesselink},
+           familyi={W\bibinitperiod},
+           given={Wieger},
+           giveni={W\bibinitperiod}}}%
+      }
+      \list{publisher}{1}{%
+        {CGAL Editorial Board}%
+      }
+      \strng{namehash}{3842a68b5c19d9426475c44382cfbe5f}
+      \strng{fullhash}{3842a68b5c19d9426475c44382cfbe5f}
+      \strng{bibnamehash}{3842a68b5c19d9426475c44382cfbe5f}
+      \strng{authorbibnamehash}{3842a68b5c19d9426475c44382cfbe5f}
+      \strng{authornamehash}{3842a68b5c19d9426475c44382cfbe5f}
+      \strng{authorfullhash}{3842a68b5c19d9426475c44382cfbe5f}
+      \field{labelalpha}{GW18}
+      \field{sortinit}{2}
+      \field{sortinithash}{cbff857e587bcb4635511624d773949e}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{booktitle}{{CGAL} User and Reference Manual}
+      \field{edition}{{4.12}}
+      \field{title}{{2D} Polygons}
+      \field{year}{2018}
+      \verb{urlraw}
+      \verb https://doc.cgal.org/4.12/Manual/packages.html#PkgPolygon2Summary
+      \endverb
+      \verb{url}
+      \verb https://doc.cgal.org/4.12/Manual/packages.html#PkgPolygon2Summary
+      \endverb
+    \endentry
+    \entry{cgal:eb-18a}{book}{}
+      \name{author}{1}{}{%
+        {{hash=df47193c9fe67f342733d92845e8643c}{%
+           family={{The CGAL Project}},
+           familyi={T\bibinitperiod}}}%
+      }
+      \list{publisher}{1}{%
+        {CGAL Editorial Board}%
+      }
+      \strng{namehash}{df47193c9fe67f342733d92845e8643c}
+      \strng{fullhash}{df47193c9fe67f342733d92845e8643c}
+      \strng{bibnamehash}{df47193c9fe67f342733d92845e8643c}
+      \strng{authorbibnamehash}{df47193c9fe67f342733d92845e8643c}
+      \strng{authornamehash}{df47193c9fe67f342733d92845e8643c}
+      \strng{authorfullhash}{df47193c9fe67f342733d92845e8643c}
+      \field{labelalpha}{The18}
+      \field{sortinit}{2}
+      \field{sortinithash}{cbff857e587bcb4635511624d773949e}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{edition}{{4.12}}
+      \field{title}{{CGAL} User and Reference Manual}
+      \field{year}{2018}
+      \verb{urlraw}
+      \verb https://doc.cgal.org/4.12/Manual/packages.html
+      \endverb
+      \verb{url}
+      \verb https://doc.cgal.org/4.12/Manual/packages.html
+      \endverb
+    \endentry
+  \enddatalist
+\endrefsection
+\endinput
+
