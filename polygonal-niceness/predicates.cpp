@@ -17,7 +17,6 @@ bool is_chord(int i, int j, Polygon2D &p)
          )
        )
     {
-      std::cout << "(" << k << "," << m << ")" << std::endl;
       if (intersect(Segment2D(p[i],p[j]), Segment2D(p[k], p[m])))
       {
         return false;

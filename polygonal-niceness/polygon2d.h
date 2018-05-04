@@ -24,6 +24,8 @@ class Polygon2D {
 
     bool is_refined_by(K::FT delta);
     K::FT area() { return _pol.area(); }
+    K::FT infinity_perimeter();
+    K::FT one_perimeter();
     bool is_convex() { return _pol.is_convex(); }
     bool is_simple() { return _pol.is_simple(); }
     int size() const { return _pol.size(); }
@@ -41,6 +43,9 @@ class Polygon2D {
     Point_2 operator[](int index) const { return _pol[index]; }
     
     Polygon_2 _pol;
+
+  private:
+    K::FT _norm_perimeter(std::function<K::FT(K::FT,K::FT)> norm);
 };
 
 
