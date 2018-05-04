@@ -5,7 +5,7 @@
 \defcounter {refsection}{0}\relax 
 \contentsline {section}{\numberline {2}Theoretical background}{2}{section.2}
 \defcounter {refsection}{0}\relax 
-\contentsline {subsection}{\numberline {2.1}The $\alpha $-fatness score}{3}{subsection.2.1}
+\contentsline {subsection}{\numberline {2.1}The $\alpha $-fatness score}{2}{subsection.2.1}
 \defcounter {refsection}{0}\relax 
 \contentsline {subsection}{\numberline {2.2}The chord-$f$ score}{3}{subsection.2.2}
 \defcounter {refsection}{0}\relax 
@@ -13,6 +13,6 @@
 \defcounter {refsection}{0}\relax 
 \contentsline {section}{\numberline {4}Empirical results}{6}{section.4}
 \defcounter {refsection}{0}\relax 
-\contentsline {section}{\numberline {5}Discussion}{7}{section.5}
+\contentsline {section}{\numberline {5}Discussion}{6}{section.5}
 \defcounter {refsection}{0}\relax 
 \contentsline {section}{References}{8}{section*.2}

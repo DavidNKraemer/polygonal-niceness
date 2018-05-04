@@ -13,6 +13,9 @@
 \usepackage[noend]{algpseudocode}
 \linenumbers
 
+
+\setcounter{tocdepth}{1} % -- part,chapters,sections
+
 \usepackage[
   backend=biber,
   style=nature,
@@ -397,7 +400,7 @@ previous section but allows for easier interpretation of the data.
 We evaluate our measurements on randomly generated polygons with vertices in the
 unit square $[0,1] \times [0,1]$. We consider collections of such polygons of
 10, 50, and 100 vertices. In Figure \ref{fig:delta-alpha} and Figure
-\ref{fig:delta-chordarc}, we measure the effect on
+\ref{fig:delta-arc}, we measure the effect on
 polygons of 10 vertices of sweeping $\delta$ between $0.05$ and $1$ on the
 resulting measurements. Figure \ref{fig:alph-inft-10} shows a comparison of
 $\alpha$-fatness and relative ${\chordarc}_{\infty}$ scores for polygons on 10
@@ -541,12 +544,6 @@ form part of the evaluation process for determining new districts, but the
 actual policy will almost surely involve ensembles of measures, both
 quantitative and otherwise, in idealized future redistricting.
 
-\begin{enumerate}
-  \item Comment on the results.
-  \item Talk about applications to Gerrymandering.
-\end{enumerate}
-
-\medskip
 
 \printbibliography[heading=bibintoc]
 
