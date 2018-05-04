@@ -19,6 +19,21 @@
 
 \refsection{0}
   \datalist[entry]{ynt/global//global/global}
+    \entry{2004vieth}{misc}{}
+      \list{publisher}{1}{%
+        {Supreme Court}%
+      }
+      \field{sortinit}{2}
+      \field{sortinithash}{cbff857e587bcb4635511624d773949e}
+      \field{labeltitlesource}{title}
+      \field{booktitle}{US}
+      \field{number}{No. 02-1580}
+      \field{title}{Vieth v. Jubelirer}
+      \field{volume}{541}
+      \field{year}{2004}
+      \field{pages}{267}
+      \range{pages}{1}
+    \endentry
     \entry{10.2307/30044198}{article}{}
       \name{author}{1}{}{%
         {{hash=721115397e365146189fed1e8afc269e}{%
@@ -36,7 +51,6 @@
       \strng{authorbibnamehash}{721115397e365146189fed1e8afc269e}
       \strng{authornamehash}{721115397e365146189fed1e8afc269e}
       \strng{authorfullhash}{721115397e365146189fed1e8afc269e}
-      \field{labelalpha}{Wan05}
       \field{sortinit}{2}
       \field{sortinithash}{cbff857e587bcb4635511624d773949e}
       \field{labelnamesource}{author}
@@ -78,7 +92,6 @@
       \strng{authorbibnamehash}{3842a68b5c19d9426475c44382cfbe5f}
       \strng{authornamehash}{3842a68b5c19d9426475c44382cfbe5f}
       \strng{authorfullhash}{3842a68b5c19d9426475c44382cfbe5f}
-      \field{labelalpha}{GW18}
       \field{sortinit}{2}
       \field{sortinithash}{cbff857e587bcb4635511624d773949e}
       \field{labelnamesource}{author}
@@ -109,7 +122,6 @@
       \strng{authorbibnamehash}{df47193c9fe67f342733d92845e8643c}
       \strng{authornamehash}{df47193c9fe67f342733d92845e8643c}
       \strng{authorfullhash}{df47193c9fe67f342733d92845e8643c}
-      \field{labelalpha}{The18}
       \field{sortinit}{2}
       \field{sortinithash}{cbff857e587bcb4635511624d773949e}
       \field{labelnamesource}{author}
