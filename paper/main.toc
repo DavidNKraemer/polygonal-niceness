@@ -11,8 +11,8 @@
 \defcounter {refsection}{0}\relax 
 \contentsline {section}{\numberline {3}Overview of empirical design}{4}{section.3}
 \defcounter {refsection}{0}\relax 
-\contentsline {section}{\numberline {4}Empirical results}{4}{section.4}
+\contentsline {section}{\numberline {4}Empirical results}{5}{section.4}
 \defcounter {refsection}{0}\relax 
-\contentsline {section}{\numberline {5}Discussion}{4}{section.5}
+\contentsline {section}{\numberline {5}Discussion}{5}{section.5}
 \defcounter {refsection}{0}\relax 
-\contentsline {section}{References}{4}{section*.2}
+\contentsline {section}{References}{6}{section*.2}

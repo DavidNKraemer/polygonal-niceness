@@ -1,4 +1,4 @@
-\documentclass[draft]{jocg}
+\documentclass[]{jocg}
 
 \usepackage{amsmath,amsfonts}
 \usepackage{amsthm}
@@ -7,6 +7,9 @@
 \usepackage[english]{babel}
 \usepackage{mathtools}
 \usepackage[mathlines]{lineno}
+\usepackage[]{graphicx}
+\usepackage{algorithm}
+\usepackage[noend]{algpseudocode}
 \linenumbers
 
 \usepackage[
@@ -215,15 +218,145 @@ facts about $\chordarc$ which develop further intuition for the score.
 
 \section{Overview of empirical design}
 
-\begin{enumerate}
-  \item Paragraph explaining discretization procedure.
-  \item Pseudocode and explanation for the alpha fatness.
-  \item Pseudocode and explanation for the chord $f$ score.
-  \item Formulate ``random'' polygons.
-  \item Explain U.S. state boundary data collection.
-\end{enumerate}
+In principal of computing the $\alpha$ and chord-$f$ scores relies on sweeping
+the continuum of points of $P$ and evaluating the aforementioned measurements.
+To estimate this process in practice, we employ the following discretizing
+scheme. Let $P$ be determined by the vertices $[v_1, \dots, v_n]$ given in
+counterclockwise order. Then, given $\delta > 0$, loop through the vertices of
+$P$, checking if $\norm{v_{i+1} - v_i} > \delta$. In the case where this holds,
+we insert $v_i' = \frac{v_i + v_{i+1}}{2}$ after $v_i$ into the polygon and
+resume the loop. This ensures that for any two adjacent vertices $v_{i}$ and
+$v_{i+1}$ in the representation of $P$ we have $\norm{v_{i+1} - v_i} \leq
+\delta$. As $\delta \to 0$ this estimates $\partial P$ more exactly. All
+computations are done with respect to the $L_{\infty}$ norm. The implementation
+of this procedure is given in Algorithm \ref{alg:delta}.
+
+%% Pseudocode for the delta refinement
+
+\begin{algorithm}[h]
+  \begin{algorithmic}[0]
+    \Procedure{RefineBy}{$P,\delta$}
+    \State{$P = [v_1, v_2, v_3, \dots, v_n]$};
+    \State{$v = v_1$}
+    \While {$\textit{next}(v) \ne v_1$}
+    \If {$\norm{\textit{next}(v) - v}_2 > \delta$}
+      \State{\textrm{Insert $\textit{midpoint}(v, \textit{next}(v))$ into $P$
+      after $v$}} 
+      \Comment{Now $\textit{next}(v)$ is the midpoint}
+      \EndIf
+      \EndWhile
+      \EndProcedure
+    \end{algorithmic}
+    \label{alg:delta}
+\end{algorithm}
+
+Given a $\delta$-refined polygon $P$, the computation of $\alpha(P)$ is
+relatively straightforward, with the simplification that points $x$ on which the
+ratio is computed lie on $\partial P$. The computation steps through $[v_1,
+\dots, v_n]$ and for each $v_i$ the radius $\varepsilon$ of the
+minimum-enclosing $\infty$-ball centered at $v_i$ is computed. Then for
+$\varepsilon_k = \frac{k}{100} \varepsilon$, $k = 1, \dots, 100$, the ratio 
+\begin{equation*}
+  \frac{\lambda[P \cap B_{\infty}(v_i, \varepsilon_k)]}{B_{\infty}(v_i,
+  \varepsilon_k)}
+\end{equation*}
+is computed and the smallest such ratio is kept. The minimum over all $v_i$ is
+given as $\alpha(P)$. The implementation of the $\alpha$ score is given in
+Algorithm \ref{alg:alpha}. 
+
+%% Pseudocode for the alpha score
+
+\begin{algorithm}[h]
+  \begin{algorithmic}[0]
+    \Function{$\alpha$Score}{$P$}
+    \State{$P = [v_1, v_2, v_3, \dots, v_n]$};
+    \State{$\textrm{min} = \infty$}
+    \For {$v \in P$}
+    \State{$\varepsilon = \textrm{radius of minimum enclosing ball of $P$ at
+    $v$}$}
+    \For {$k = 1, 2, \dots, 100$} \Comment{$100$ is arbitrary}
+    \State{$\varepsilon_k = \frac{k}{100} \varepsilon$}
+    \State{$\textrm{area} = \frac{\lambda[P \cap B_{\infty}(v, \varepsilon_k)]}{B_{\infty}(v, \varepsilon_k)}$}
+    \If {$\textrm{min} > \textrm{area}$}
+      \State{$\textrm{min} = \textrm{area}$}
+      \EndIf
+      \EndFor
+      \EndFor
+      \State{\Return{\textrm{min}}}
+      \EndFunction
+    \end{algorithmic}
+  \label{alg:alpha}
+\end{algorithm}
+
+Similarly, given a $\delta$-refined polygon $P$, the chord-$f$ score is computed
+by sweeping all possible chords of $P$. For each point $v_i, v_j \in \partial P$
+with $i < j$, if $[v_i, v_j]$ is indeed a valid chord of $P$, the partition $P =
+P' \cup P''$ is computed and the maximum of $f(P')$ and $f(P'')$ is kept. The
+minimum such value is given as $s_f(P)$. The implementation of the chord-$f$
+score is given in Algorithm \ref{alg:chordf}.
+
+%% Pseudocode for the chord f score
+
+\begin{algorithm}[h]
+\begin{algorithmic}[0]
+  \Function{ChordScore}{P,f}
+  \State{$P = [v_1, v_2, v_3, \dots, v_n]$};
+  \For {$v \in P$}
+  \For {$w \in [\textit{next}(v), \dots, v_n]$}
+  \If {$[v,w]$ is a chord of $P$}
+    \State{Partition $P = P' \cup P''$ by $[v,w]$}
+    \State{$\textrm{submax} = \textit{max}(f(P'), f(P''))$}
+    \If {$\textrm{min} > \textrm{submax}$}
+      \State{$\textrm{min} = \textrm{submax}$}
+      \EndIf
+    \EndIf
+  \EndFor
+  \EndFor
+  \State{\Return{\textrm{min}}}
+  \EndFunction
+\end{algorithmic}
+\label{alg:chordf}
+\end{algorithm}
+
+All of these algorithms are implemented in CGAL \cite{cgal:eb-18a} with the
+extensive use of the 2D Polygon library \cite{cgal:gw-p2-18a}.
+
 
 \section{Empirical results}
+
+
+We evaluate our measurements on randomly generated polygons with vertices in the
+unit square $[0,1] \times [0,1]$. We consider collections of such polygons of
+10, 50, and 100 vertices. In Figure \ref{fig:delta}, we measure the effect of
+sweeping $\delta$ between $0.05$ and $1$ on the resulting measurements. Figure
+\ref{fig:alph-inft-10} shows a comparison of $\alpha$-fatness and
+${\chordarc}_{\infty}$ scores for polygons on 10 vertices. Figure
+\ref{fig:alph-one-50} shows a similar comparison of $\alpha$-fatness and
+${\chordarc}_{1}$ scores for polygons on 50 vertices.
+
+\begin{figure}[t]
+  \centering
+  %\includegraphics{<+file+>}
+  \caption{Effect of sweeping $\delta$ on measurements}
+  \label{fig:delta}
+\end{figure}<++>
+
+\begin{figure}[t]
+  \centering
+  \includegraphics[height=0.8\textheight]{../plots/u_10_alpha_score_chord_arc_infinity_vertices_0-05_delta_ranking.jpg}
+  \caption{$\alpha$ scores and ${\chordarc}_{\infty}$ scores for randomly
+  generated polygons on 10 vertices.}
+  \label{fig:alph-inft-10}
+\end{figure}
+
+\begin{figure}[t]
+  \centering
+  \includegraphics[height=0.8\textheight]{../plots/u_50_alpha_score_chord_arc_one_vertices_0-05_delta_ranking.jpg}
+  \caption{$\alpha$ scores and ${\chordarc}_{\infty}$ scores for randomly
+  generated polygons on 50 vertices.}
+  \label{fig:alph-inft-10}
+\end{figure}
+
 
 \begin{enumerate}
   \item Show how changing $\delta$ affects scores.
@@ -234,8 +367,8 @@ facts about $\chordarc$ which develop further intuition for the score.
 \section{Discussion}
 
 \begin{enumerate}
-  \item Comment on the results.\cite{cgal:eb-18a}
-  \item Talk about applications to Gerrymandering.\cite{cgal:gw-p2-18a}
+  \item Comment on the results.
+  \item Talk about applications to Gerrymandering.
 \end{enumerate}
 
 \medskip
