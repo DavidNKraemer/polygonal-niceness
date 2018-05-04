@@ -18,12 +18,12 @@ SRC_EXT := cpp
 SRCS := $(shell find $(SRC_DIR) -type f -name *.$(SRC_EXT))
 OBJS := $(patsubst $(SRC_DIR)/%,$(BUILD_DIR)/%,$(SRCS:.$(SRC_EXT)=.o))
 DATA := $(shell find $(DATADIR) -type f -name *.csv)
-INC := -I include
+INC := -I$(LEDAROOT)/incl
 
 # linking flags, "-L/path/to/your/libs"
-LDFLAGS :=
+LDFLAGS := -L$(LEDAROOT)
 # libraries, either "/path/to/static/libs.a" or just -llibs
-LIBS := -lCGAL -lgmp -lmpfr -lboost_thread
+LIBS := $(LDFLAGS) -lCGAL -lgmp -lmpfr -lboost_thread -frounding-math -lm -lleda
 
 # dependencies, your headers that are depended by objs
 # note that in general, you need to group objs for different
